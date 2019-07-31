@@ -3,4 +3,6 @@
 https://www.aclweb.org/anthology/P19-1524
 
 ## Overall architecture
-![Architecture](fig/architecture.png)
+<img src="fig/architecture.png" width="400">
+
+##
