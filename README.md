@@ -13,25 +13,21 @@ First of all:
 ```
 
 1. Create a virtual environment with Conda
-
 ```bash
-    conda create -n softdict --file requirements_conda.txt
+    conda create -n softdict --file requirements_conda.txt -c conda-forge/label/broken -c conda-forge
 ```
 
 2. Activate the new environment
-
 ```bash
     conda activate softdict
 ```
 
 3. Install the pip requirements
-
 ```bash
     pip install -r requirements_pip.txt
 ```
 
 4. Prepare the configurations
-
 ```bash
     sed -i 's@INSTALLATION_DIR@'"$PWD"'@' configs/*.config
 ```
@@ -39,7 +35,7 @@ First of all:
 ## Training
 
 ```bash
-    allennlp train configs/HSCRF_softDictionary.conll2003.config -s dump_directory/ --include-package models    
+    allennlp train configs/HSCRF_softDictionary.conll2003.config -s dump_directory/ --include-package models 
 ```
 
 ## Evaluating
