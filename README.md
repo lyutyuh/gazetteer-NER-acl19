@@ -7,6 +7,11 @@ https://www.aclweb.org/anthology/P19-1524
 
 ## Installation
 
+First of all:
+```bash
+   git clone https://github.com/lyutyuh/acl19_subtagger.git ; cd acl19_subtagger
+```
+
 1. Create a virtual environment with Conda
 
 ```bash
