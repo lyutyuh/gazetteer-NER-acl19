@@ -45,5 +45,5 @@ First of all:
 ## Evaluating
 
 ```bash
-    allennlp evaluate dump_directory/model.tar.gz DATA/conll2003.test --include-package models    
+    allennlp evaluate dump_directory/model.tar.gz https://www.jeffliu.page/files/DATA/conll2003/test.txt --include-package models    
 ```
