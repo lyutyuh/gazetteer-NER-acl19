@@ -16,7 +16,7 @@ https://www.aclweb.org/anthology/P19-1524
 2. Activate the new environment
 
 ```bash
-    source activate softdict
+    conda activate softdict
 ```
 
 3. Install the pip requirements
@@ -25,9 +25,20 @@ https://www.aclweb.org/anthology/P19-1524
     pip install -r requirements_pip.txt
 ```
 
+4. Prepare the configurations
+
+```bash
+    sed -i 's@INSTALLATION_DIR@'"$PWD"'@' configs/*.config
+```
+
 ## Training
 
 ```bash
-    allennlp train configs/HSCRF_softDictionary.conll2003.config -s dump_directory/ --include-package models
-    
+    allennlp train configs/HSCRF_softDictionary.conll2003.config -s dump_directory/ --include-package models    
+```
+
+## Evaluating
+
+```bash
+    allennlp evaluate dump_directory/model.tar.gz DATA/conll2003.test --include-package models    
 ```
