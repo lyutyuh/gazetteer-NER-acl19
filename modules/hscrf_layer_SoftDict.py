@@ -226,7 +226,7 @@ class HSCRF(nn.Module):
         
         # TODO: calculate BILOU features
         BILOU_features = self.get_BILOU_features(token_indices, sent_len, span_len)
-        BILOU_features = span_exprs.new_zeros(batch_size, span_exprs.size(1),span_exprs.size(2),16)
+        # BILOU_features = span_exprs.new_zeros(batch_size, span_exprs.size(1),span_exprs.size(2),16)
         
         new_emb = torch.cat((span_exprs, BILOU_features, endpoint_vec, index), 3)
         
