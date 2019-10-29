@@ -82,7 +82,6 @@ class soft_dictionary_span_classifier_HSCRF(Model):
             self.BILOU_tag_projection_layer = torch.nn.Sequential(
                 TimeDistributed(self.feedforward),
                 TimeDistributed( Linear(self.feedforward.get_output_dim(), self.BILOU_const*(self.num_span_tags-1)) )
-                # minus 1 for O, then mult 2, treat it like many binary classification 
             )
         
         self.metrics = {}

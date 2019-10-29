@@ -36,7 +36,6 @@ class HSCRF(nn.Module):
         self.ix_to_tag[self.start_id] = 'START'
         self.ix_to_tag[self.stop_id] = 'STOP'
         
-        self.grconv = False
 
         self.index_embeds = nn.Embedding(self.ALLOWED_SPANLEN, self.index_embeds_dim)
         self.init_embedding(self.index_embeds.weight)
@@ -132,7 +131,6 @@ class HSCRF(nn.Module):
                 y_1 = int(ys[i, end, y])
                 if self.ix_to_tag[int(y)] not in ('START', 'STOP'):
                     spans[(int(start),int(end))] = self.ix_to_tag[int(y)]
-                # spans.append((start, end, y_1, y))
                 y = y_1
                 end = start - 1
             batch_spans.append(spans)
@@ -158,7 +156,6 @@ class HSCRF(nn.Module):
 
 
     def HSCRF_scores(self, global_feats, token_indices):
-        ### TODO: need to improve
         """
         calculate SCRF scores with HSCRF
         args:
@@ -224,14 +221,12 @@ class HSCRF(nn.Module):
         index = Variable(torch.LongTensor(range(span_len+1))).cuda(util.get_device_of(emb_z))
         index = self.index_embeds(index).unsqueeze(0).unsqueeze(0).expand(batch_size, sent_len-span_len, span_len+1, self.index_embeds_dim)
         
-        # TODO: calculate BILOU features
+        
         BILOU_features = self.get_BILOU_features(token_indices, sent_len, span_len)
-        # BILOU_features = span_exprs.new_zeros(batch_size, span_exprs.size(1),span_exprs.size(2),16)
         
         new_emb = torch.cat((span_exprs, BILOU_features, endpoint_vec, index), 3)
         
-        return new_emb.transpose(1,2).contiguous()
-    
+        return new_emb.transpose(1,2).contiguous()    
     
     
     def get_BILOU_features(self, token_indices, sent_len, span_len):
@@ -263,11 +258,9 @@ class HSCRF(nn.Module):
         
         # shape (batch_size, num_spans, max_span_wid, 4* span_tags) BILU
         span_logits = self.BILOU_tag_projection_layer(spans_encoded)
-        
         span_logits = self.tanher(span_logits)
-        # try sth else...
         span_logits = torch.cat([span_logits, span_logits.new_zeros(batch_size, 1, span_logits.size(2), span_logits.size(3))], dim=1)
-        # could possibly concatenate -1 instead for tanh activation? 
+        
         return span_logits[:,:,:span_len+1,:].detach()
         
 

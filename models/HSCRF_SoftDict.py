@@ -54,9 +54,12 @@ class HSCRF_SoftDict(Model):
         super().__init__(vocab, regularizer)
         self.span_label_namespace = span_label_namespace
         self.token_label_namespace = token_label_namespace
-        self.text_field_embedder = text_field_embedder
+        
         self.num_span_tags = self.vocab.get_vocab_size(span_label_namespace)
         self.num_token_tags = self.vocab.get_vocab_size(token_label_namespace)
+        
+        self.text_field_embedder = text_field_embedder
+        
         self.max_span_width = max_span_width
         self.encoder = encoder
         self._verbose_metrics = verbose_metrics
@@ -71,6 +74,7 @@ class HSCRF_SoftDict(Model):
         else:
             self.dropout = None
         self._feedforward = feedforward
+        
         if feedforward is not None:
             output_dim = feedforward.get_output_dim()
         else:
@@ -82,6 +86,7 @@ class HSCRF_SoftDict(Model):
                 TimeDistributed(softdict_feedforward),
                 TimeDistributed(Linear(softdict_feedforward.get_output_dim(), 4*4))
             )
+        
         self.load_weights(softdict_text_field_embedder, 
                          softdict_length_embedder,
                          softdict_encoder,
@@ -108,7 +113,8 @@ class HSCRF_SoftDict(Model):
         if calculate_span_f1 is None:
             calculate_span_f1 = token_label_encoding is not None
 
-        self.token_label_encoding = token_label_encoding
+        self.token_label_encoding = token_label_encoding # BILOU/BIO/BI
+        
         if constrain_crf_decoding:
             token_labels = self.vocab.get_index_to_token_vocabulary(token_label_namespace)
             constraints = allowed_transitions(token_label_encoding, token_labels)
@@ -118,8 +124,10 @@ class HSCRF_SoftDict(Model):
         self.metrics = {}
         self.calculate_span_f1 = calculate_span_f1
         self._span_f1_metric = MySpanF1()
+        
         check_dimensions_match(text_field_embedder.get_output_dim(), encoder.get_input_dim(),
                                "text field embedding dim", "encoder input dim")
+        
         if feedforward is not None:
             check_dimensions_match(encoder.get_output_dim(), feedforward.get_input_dim(),
                                    "encoder output dim", "feedforward input dim")
@@ -136,7 +144,7 @@ class HSCRF_SoftDict(Model):
         softdict_text_field_embedder_statedict = {ky[len('text_field_embedder')+1:]:val for ky,val in pretrained_model_state.items() if ky.startswith('text_field_embedder')}
         tmp = softdict_text_field_embedder_statedict['token_embedder_tokens.weight']
         
-        # tmp[0:1] or tmp[1:2]?
+        
         softdict_text_field_embedder_statedict['token_embedder_tokens.weight'] = torch.cat([tmp, tmp[0:1].expand(self.vocab.get_vocab_size('tokens') - tmp.size(0), -1)], dim=0)
         tmp = softdict_text_field_embedder_statedict['token_embedder_token_characters._embedding._module.weight']
         softdict_text_field_embedder_statedict['token_embedder_token_characters._embedding._module.weight'] = torch.cat([tmp, 
@@ -279,7 +287,6 @@ class HSCRF_SoftDict(Model):
 
         if self._feedforward is not None:
             encoded_text = self._feedforward(encoded_text)
-            pass
 
         hscrf_neg_log_likelihood = self.hscrf_layer(
             encoded_text, 
@@ -316,7 +323,7 @@ class HSCRF_SoftDict(Model):
         """
         output_dict["tags"] = [
                 [self.vocab.get_token_from_index(tag, namespace=self.label_namespace)
-                 for tag in instance_tags]
+                for tag in instance_tags]
                 for instance_tags in output_dict["tags"]
         ]
 
