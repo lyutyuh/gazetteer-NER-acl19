@@ -25,10 +25,7 @@ import allennlp.nn.util as util
 from allennlp.training.metrics import CategoricalAccuracy
 
 from modules.span_based_chunker import SpanBasedChunker
-from modules import span_crf
 from metrics.span_f1 import MySpanF1
-from metrics.span_based_f1_measure_with_entity_f1 import SpanBasedF1MeasureWithEntityF1
-from modules.semi_markovian_CRF import SemiMarkovianConditionalRandomField
 
 
 @Model.register("soft_dictionary_span_classifier_HSCRF")
