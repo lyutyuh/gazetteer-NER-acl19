@@ -1,5 +1,6 @@
 DATA/*
 *.out
+*.pyc
 pretrained_subtagger/
 __pycache__
 .ipynb_checkpoints
