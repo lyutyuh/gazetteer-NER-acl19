@@ -45,8 +45,6 @@ First of all:
 ```
 
 ## The Gazetteer
-A pretrained subtagger module can be found at https://www.jeffliu.page/files/state.th
 
-The gazetteer from [*Design challenges and misconceptions in named entity recognition*](https://www.aclweb.org/anthology/W09-1119) which we use can be found at "https://www.jeffliu.page/files/gazetteers_UIUC.zip"
+The gazetteers, and the pretrained subtagger module can be found [here](https://drive.google.com/drive/folders/13yl8mlM1ql3jSl0gUAty8ZdiKWxN4RIM?usp=sharing)
 
-The cleaned and mapped gazetteer to train our subtagger can be found at "https://www.jeffliu.page/files/softdict.zip"
